@@ -1,7 +1,30 @@
-export default function Home() {
+import Movie from "./Movie";
+
+export default async function Home() {
+    // 'https://api.themoviedb.org/3/movie/popular'
+
+    const data = await fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}`,
+        { next: { revalidate: 60 } }
+    );
+
+    const res = await data.json();
+
+    console.log(res);
+
     return (
         <main>
-            <h1 className="text-lg">Hi next13</h1>
+            <div className="grid gap-16 grid-cols-fluid">
+                {res.results.map((movie: any) => (
+                    <Movie
+                        key={movie.id}
+                        id={movie.id}
+                        title={movie.title}
+                        poster_path={movie.poster_path}
+                        release_date={movie.release_date}
+                    />
+                ))}
+            </div>
         </main>
     );
 }
